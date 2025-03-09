@@ -1,22 +1,17 @@
-import math
+#Cho số lần lặp và cho khoảng cách ly nghiệm
 import numpy as np
+import sympy as sp
 def newton_method(f_str,df_str,d2f_str,a,b,n):
-    #Interprete math language
-    f_str=f_str.replace("ln","log")
-    df_str=df_str.replace("ln","log")
-    d2f_str=d2f_str.replace("ln","log")
-    context={
-        'math':math,
-        'log':math.log,
-        'exp':math.exp,
-        'sqrt':math.sqrt,
-        'pi':math.pi,
-        'e':math.e
-        }
-    #Function and derivative
-    f=lambda x: eval(f_str,context,{'x':x})
-    df=lambda x: eval(df_str,context,{'x':x})
-    d2f = lambda x: eval(d2f_str,{'x':x})
+    #Khởi tạo biến x và biểu thức toán học
+    x=sp.symbols('x')
+    #Chuyển các chuỗi hàm thành biểu thức toán học
+    f_expr = sp.sympify(f_str)
+    df_expr = sp.diff(f_expr,x)
+    d2f_expr=sp.diff(df_expr,x)
+    #Hàm và các đạo hàm dưới dạng hàm số
+    f=sp.lambdify(x,f_expr,"numpy")
+    df=sp.lambdify(x,df_expr,"numpy")
+    d2f = sp.lambdify(x,d2f_expr,"numpy")
     #Kiểm tra dấu
     def check_sign_consistency(func,a,b,num_points=100):
         xs=np.linspace(a,b,num_points)
